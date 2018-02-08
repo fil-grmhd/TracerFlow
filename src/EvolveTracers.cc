@@ -279,6 +279,10 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
         tracer_x_k1[i] = dt*tracer_velx[i];
         tracer_y_k1[i] = dt*tracer_vely[i];
         tracer_z_k1[i] = dt*tracer_velz[i];
+
+	tracer_velx_out[i] = tracer_velx[i];
+        tracer_vely_out[i] = tracer_vely[i];
+        tracer_velz_out[i] = tracer_velz[i];
       }
 
       *RK4_counter = 2;

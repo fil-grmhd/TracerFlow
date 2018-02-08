@@ -499,7 +499,7 @@ void TracerFlow_OutputTracers(CCTK_ARGUMENTS)
   // Output vector vars
   CCTK_REAL * Pos[3] = {tracer_x, tracer_y, tracer_z};
   writer(cctkGH, ntracers_on_this_proc, 3, Pos, "Coordinates", file_id);
-  CCTK_REAL * Vel[3] = {tracer_velx, tracer_vely, tracer_velz};
+  CCTK_REAL * Vel[3] = {tracer_velx_out, tracer_vely_out, tracer_velz_out};
   writer(cctkGH, ntracers_on_this_proc, 3, Vel, "Velocities", file_id);
 
   // Output scalar vars

@@ -43,7 +43,8 @@ CCTK_REAL tracer_vars TYPE=array DIM=1 SIZE=ntracers TAGS='Checkpoint="no"'
   tracer_eninf,
   tracer_rho,
   tracer_temp,
-  tracer_ye
+  tracer_ye,
+  tracer_velx_out, tracer_vely_out, tracer_velz_out
 } "Quantities interpolated at the tracer locations for output / postprocessing"
 
 PRIVATE:
