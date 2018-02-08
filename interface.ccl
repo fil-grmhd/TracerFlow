@@ -17,7 +17,7 @@ USES FUNCTION GetMPICommWorld
 
 PUBLIC:
 
-CCTK_REAL derived_quantities TYPE=GF TAGS='InterpNumTimelevels=1 prolongation="none" Checkpoint="no"'
+CCTK_REAL derived_quantities TYPE=GF TAGS='prolongation="none" Checkpoint="yes"'
 {
   adv_velx,
   adv_vely,

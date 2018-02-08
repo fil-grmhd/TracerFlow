@@ -32,14 +32,6 @@ extern "C" void TracerFlow_ComputeDerivedQuantities(CCTK_ARGUMENTS)
   CCTK_REAL const * vely = &vel[1*gsiz];
   CCTK_REAL const * velz = &vel[2*gsiz];
 
-/* CHECK: we cannot skip ghostzones due to the interpolation, right?
-  for(int k = cctk_nghostzones[2]; k < cctk_lsh[2]-cctk_nghostzones[2]; ++k) {
-    for(int j = cctk_nghostzones[1]; j < cctk_lsh[1]-cctk_nghostzones[1]; ++j) {
-      for(int i = cctk_nghostzones[0]; i < cctk_lsh[0]-cctk_nghostzones[0]; ++i) {
-*/
-
-  // CHECK: maybe we still need to compute this every iteration, timelvls in interface?
-  if(cctk_iteration % step_freq == 0 && cctk_iteration >= start_iteration) {
     #pragma omp parallel for schedule(static)
     for(int k = 0; k < cctk_lsh[2]; ++k) {
       for(int j = 0; j < cctk_lsh[1]; ++j) {
@@ -49,28 +41,6 @@ extern "C" void TracerFlow_ComputeDerivedQuantities(CCTK_ARGUMENTS)
           adv_velx[ijk] = alp[ijk] * velx[ijk] - betax[ijk];
           adv_vely[ijk] = alp[ijk] * vely[ijk] - betay[ijk];
           adv_velz[ijk] = alp[ijk] * velz[ijk] - betaz[ijk];
-        }
-      }
-    }
-  }
-
-  // if one of these is true, just skip the following computation (not needed for the evolution)
-  if(outTracers_every == 0) {
-    if(cctk_iteration != outTracers_iteration) {
-      return;
-    }
-  }
-  else {
-    if(cctk_iteration % outTracers_every != 0 && cctk_iteration != outTracers_iteration) {
-      return;
-    }
-  }
-
-  #pragma omp parallel for schedule(static)
-  for(int k = 0; k < cctk_lsh[2]; ++k) {
-    for(int j = 0; j < cctk_lsh[1]; ++j) {
-      for(int i = 0; i < cctk_lsh[0]; ++i) {
-        const int ijk = CCTK_GFINDEX3D(cctkGH, i, j, k);
 
         // compute covariant three velocity
         CCTK_REAL const v_x = gxx[i]*velx[i] + gxy[i]*vely[i] + gxz[i]*velz[i];
@@ -84,7 +54,8 @@ extern "C" void TracerFlow_ComputeDerivedQuantities(CCTK_ARGUMENTS)
                     + v_z[ijk] * betaz[ijk]
                     - alp[ijk])
                    - 1.0;
+        }
       }
     }
-  }
+
 }

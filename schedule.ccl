@@ -2,16 +2,10 @@
 
 if(ntracers > 0) {
 
-STORAGE: tracerevol
-STORAGE: tracervel
-STORAGE: tracervel_old
-STORAGE: tracervars
-if(tracers_with_leakage)
-{
-  STORAGE: tracerleak
-}
-STORAGE: tracerextra
-STORAGE: first_step
+STORAGE: tracer_evol
+STORAGE: tracer_vars
+STORAGE: RK4_counter
+STORAGE: derived_quantities[3]
 
 SCHEDULE TracerFlow_ParamCheck AT CCTK_PARAMCHECK
 {
@@ -104,5 +98,12 @@ SCHEDULE TracerFlow_OutputTracers AT CCTK_ANALYSIS AFTER TracerFlow_InterpExtra
   LANG: C
   OPTION: global
 } "output tracers"
+
+#If THC is used the AFTER CLAUSE is not needed and will automatically be ignored
+SCHEDULE TracerFlow_ComputeDerivedQuantities IN AddToTmunu AFTER IllinoisGRMHD_outer_boundaries_on_P_rho_b_vx_vy_vz
+{
+  LANG: C
+}"Compute derived quantities"
+
 
 } # if(ntracers > 0)
