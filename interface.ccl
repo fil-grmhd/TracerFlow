@@ -1,0 +1,52 @@
+# Interface definition for thorn TracerFlow
+
+implements: TracerFlow
+
+inherits: HydroBase
+
+CCTK_INT FUNCTION IO_TruncateOutputFiles \
+  (CCTK_POINTER_TO_CONST IN GH)
+
+USES FUNCTION IO_TruncateOutputFiles
+
+# Get access to communicators
+CCTK_POINTER_TO_CONST \
+FUNCTION GetMPICommWorld (CCTK_POINTER_TO_CONST IN cctkGH)
+
+USES FUNCTION GetMPICommWorld
+
+PUBLIC:
+
+CCTK_REAL derived_quantities TYPE=GF TAGS='InterpNumTimelevels=1 prolongation="none" Checkpoint="no"'
+{
+  adv_velx,
+  adv_vely,
+  adv_velz,
+  eninf
+} "Local advection velocity u^i / u^0 and energy at infinity - u_t - 1"
+
+CCTK_REAL tracer_evol TYPE=array DIM=1 SIZE=ntracers TAGS='Checkpoint="yes"'
+{
+  tracer_x, tracer_y, tracer_z,
+  tracer_x_k1, tracer_y_k1, tracer_z_k1,
+  tracer_x_k2, tracer_y_k2, tracer_z_k2,
+  tracer_x_k3, tracer_y_k3, tracer_z_k3,
+  tracer_x_k4, tracer_y_k4, tracer_z_k4,
+  shifted_tracer_x, shifted_tracer_y, shifted_tracer_z,
+  tracer_velx, tracer_vely, tracer_velz,
+  tracer_frozen
+} "Quantities needed for the evolution of the tracers"
+
+CCTK_REAL tracer_vars TYPE=array DIM=1 SIZE=ntracers TAGS='Checkpoint="no"'
+{
+  tracer_wlorentz,
+  tracer_eninf,
+  tracer_rho,
+  tracer_temp,
+  tracer_ye
+} "Quantities interpolated at the tracer locations for output / postprocessing"
+
+PRIVATE:
+
+CCTK_INT RK4_counter TYPE=SCALAR "Counter that keeps track of the RK4 iterations"
+  

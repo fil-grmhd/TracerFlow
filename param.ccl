@@ -1,0 +1,101 @@
+# Parameter definitions for thorn TracerFlow
+
+RESTRICTED:
+
+CCTK_INT ntracers "how many tracers do we want to use" STEERABLE=RECOVER
+{
+ 0:* :: ""
+} 0
+
+BOOLEAN reset_tracers_on_recover "start with clean tracers upon recover" STEERABLE=ALWAYS
+{
+} "no"
+
+BOOLEAN manual_pos_tracers "position manually the tracers from file" STEERABLE=ALWAYS
+{
+} "no"
+
+CCTK_INT start_iteration "Iteration at which to start advecting the tracers"
+{
+  0:* :: "zero or some positive number."
+} 0
+
+CCTK_INT step_freq "How often (in units of cctk_iteration) to perform an RK4 substep? Usually 4--8 works best. Definitely choose a power of 2."
+{
+  0:4096 :: "zero (disable integration) or some other number"
+} 0
+
+CCTK_REAL coord_bound "fabs(x) > coord_bound || fabs(y) > coord_bound || fabs(z) > coord_bound -> Tracer is out of bounds, stop evolution." STEERABLE=ALWAYS
+{
+  0:* :: "Any number"
+} 800.0
+
+STRING interpolator "Interpolator" STEERABLE=always
+{
+  "" :: "must be a registered interpolator"
+} "Lagrange polynomial interpolation"
+
+STRING interpolator_options "Options for the interpolator" STEERABLE=always
+{
+  "" :: "must be a valid options specification"
+} "order=4"
+
+STRING coordinate_system "Coordinate system" STEERABLE=always
+{
+  "" :: "must be a registered coordinate system"
+} "cart3d"
+
+####### control output
+
+STRING tracersfile "basename for output file, actual name will depend on the other options set"
+{
+  ".+" :: "any valid filename"
+} "tracers"
+
+STRING tracers_pos_file "Input file with the initial position of the tracers" STEERABLE=always
+{
+  ".+" :: "any valid filename"
+} "tracers_position.h5"
+
+CCTK_INT outTracers_every "how often to write to disk" STEERABLE=always
+{
+   0   :: "never output regularly"
+   1:* :: "every so many iterations"
+} 1
+
+CCTK_INT outTracers_iteration "specific iteration to write to disk" STEERABLE=always
+{
+   -1  :: "no output for a specific iteration"
+   0:* :: "any iteration"
+} -1
+
+BOOLEAN write_VisIt_file "create a VisIt virtual database file to simplify importing into VisIt"
+{
+} "no"
+
+BOOLEAN one_file_per_timestep "collect data from all MPI processes before writing"
+{
+} "yes"
+
+BOOLEAN output_extra_fields "Output auxiliary fields"
+{
+} "no"
+
+
+########################################
+CCTK_INT verbose "Set verbosity level" STEERABLE=ALWAYS
+{
+  0:2 :: "0 = no output; 1=useful info; 2=maybe useful for debugging"
+} 0
+
+CCTK_INT debug "Evolve analytic velocity data and verify that the RK4 solution is consistent to 4th order."
+{
+  0:1 :: "0 = disable; 1=enable debug"
+} 0
+
+
+SHARES: IO
+
+USES STRING out_dir
+
+

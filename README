@@ -1,0 +1,9 @@
+Cactus Code Thorn TracerFlow
+Author(s)    : Ludwig Jens Papenfort <papenfort@th.physik.uni-frankfurt.de>
+Maintainer(s): Ludwig Jens Papenfort <papenfort@th.physik.uni-frankfurt.de>
+Licence      : GNU GPLv3
+--------------------------------------------------------------------------
+
+Massless tracer evolution code heavily based on code from
+ZelmaniTracers (Christian D. Ott <cott@tapir.caltech.edu>)
+and particle_tracerET (Zachariah Etienne <zbetienne@mail.wvu.edu>).
