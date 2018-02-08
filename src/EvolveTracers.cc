@@ -94,6 +94,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
       /***************************************************************/
 
       // CHECK: these loops could become quite big, parallize/vectorize?
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         tracer_x_k1[i] = dt*tracer_velx[i];
         tracer_y_k1[i] = dt*tracer_vely[i];
@@ -115,6 +116,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
         k_2 = dt f(y_n + 0.5*k_1,t_n + 0.5 dt) = dt f(y_n + 0.5*k_1) <- no explicit time dependence in f
       */
 
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         shifted_tracer_x[i] = tracer_x[i] + 0.5*tracer_x_k1[i];
         shifted_tracer_y[i] = tracer_y[i] + 0.5*tracer_y_k1[i];
@@ -134,6 +136,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
       if(debug) debug_analytic_test(num_tracers,shifted_tracer_x,shifted_tracer_y,shifted_tracer_z, tracer_velx,tracer_vely,tracer_velz);
       /***************************************************************/
 
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         tracer_x_k2[i] = dt*tracer_velx[i];
         tracer_y_k2[i] = dt*tracer_vely[i];
@@ -145,6 +148,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
         k_3 = dt f(y_n + 0.5*k_2,t_n + 0.5 dt) = dt f(y_n + 0.5 k_2) <- no explicit time dependence in f
       */
 
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         shifted_tracer_x[i] = tracer_x[i] + 0.5*tracer_x_k2[i];
         shifted_tracer_y[i] = tracer_y[i] + 0.5*tracer_y_k2[i];
@@ -164,6 +168,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
       if(debug) debug_analytic_test(num_tracers,shifted_tracer_x,shifted_tracer_y,shifted_tracer_z, tracer_velx,tracer_vely,tracer_velz);
       /***************************************************************/
 
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         tracer_x_k3[i] = dt*tracer_velx[i];
         tracer_y_k3[i] = dt*tracer_vely[i];
@@ -182,6 +187,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
         RK4 step 4:
         k_4 = dt f(y_n + k_3,t_n + dt) = dt f(y_n + k_3) <- no explicit time dependence in f
       */
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         shifted_tracer_x[i] = tracer_x[i] + tracer_x_k3[i];
         shifted_tracer_y[i] = tracer_y[i] + tracer_y_k3[i];
@@ -201,6 +207,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
       if(debug) debug_analytic_test(num_tracers,shifted_tracer_x,shifted_tracer_y,shifted_tracer_z, tracer_velx,tracer_vely,tracer_velz);
       /***************************************************************/
 
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         tracer_x_k4[i] = dt*tracer_velx[i];
         tracer_y_k4[i] = dt*tracer_vely[i];
@@ -239,6 +246,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
       }
       /******************************/
 
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
       /*
         Update particle positions now. For RK4:
@@ -266,6 +274,7 @@ extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
       if(debug) debug_analytic_test(num_tracers,tracer_x,tracer_y,tracer_z, tracer_velx,tracer_vely,tracer_velz);
       /***************************************************************/
 
+      #pragma omp parallel simd
       for(int i = 0; i<num_tracers; i++) {
         tracer_x_k1[i] = dt*tracer_velx[i];
         tracer_y_k1[i] = dt*tracer_vely[i];
