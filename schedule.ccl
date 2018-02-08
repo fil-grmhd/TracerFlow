@@ -15,64 +15,32 @@ SCHEDULE TracerFlow_ParamCheck AT CCTK_PARAMCHECK
 
 #SCHEDULE TracerFlow_SetupTracers AT CCTK_INITIAL AFTER HydroBase_Initial
 
-if(manual_pos_tracers) {
-    SCHEDULE Manual_SetupTracers AT CCTK_POSTPOSTINITIAL
+    SCHEDULE TracerFlow_Manual_SetupTracers AT CCTK_POSTPOSTINITIAL
     {
       LANG: C
       OPTION: global
     } "Manually setup tracers"
 
-    SCHEDULE TracerFlow_InterpBase AT CCTK_POSTPOSTINITIAL \
+    SCHEDULE TracerFlow_InterpAllQuantities AT CCTK_POSTPOSTINITIAL \
         AFTER Manual_SetupTracers
     {
       LANG: C
       OPTIONS: global
     } "Interpolate basic physical quantities at the tracer locations"
-}
-else {
-    SCHEDULE TracerFlow_SetupTracers AT CCTK_POSTPOSTINITIAL
-    {
-      LANG: C
-      OPTION: global
-    } "Setup tracers"
-
-    SCHEDULE TracerFlow_InterpBase AT CCTK_POSTPOSTINITIAL \
-        AFTER TracerFlow_SetupTracers
-    {
-      LANG: C
-      OPTIONS: global
-    } "Interpolate basic physical quantities at the tracer locations"
-}
 
 if(reset_tracers_on_recover) {
-  if(manual_pos_tracers) {
-      SCHEDULE Manual_SetupTracers AT POST_RECOVER_VARIABLES
+      SCHEDULE TracerFlow_Manual_SetupTracers AT POST_RECOVER_VARIABLES
       {
         LANG: C
         OPTION: global
       } "Manually setup tracers"
 
-      SCHEDULE TracerFlow_InterpBase AT POST_RECOVER_VARIABLES \
+      SCHEDULE TracerFlow_InterpAllQuantities AT POST_RECOVER_VARIABLES \
         AFTER Manual_SetupTracers
       {
         LANG: C
         OPTIONS: global
       } "Interpolate basic physical quantities at the tracer locations"
-  }
-  else {
-  	SCHEDULE TracerFlow_SetupTracers AT POST_RECOVER_VARIABLES
-  	{
-    	  LANG: C
-    	  OPTION: global-late
-  	} "Setup tracers"
-
-  	SCHEDULE TracerFlow_InterpBase AT  POST_RECOVER_VARIABLES \
-      	AFTER TracerFlow_SetupTracers
-  	{
-    	  LANG: C
-    	  OPTIONS: global-late
-  	} "Interpolate basic physical quantities at the tracer locations"
-  } 
 }
 
 SCHEDULE TracerFlow_EvolveTracers AT CCTK_EVOL AFTER MoL_Evolution
@@ -81,7 +49,7 @@ SCHEDULE TracerFlow_EvolveTracers AT CCTK_EVOL AFTER MoL_Evolution
   OPTION: global-late
 } "evolve tracers"
 
-SCHEDULE TracerFlow_InterpBase AT CCTK_EVOL AFTER TracerFlow_EvolveTracers
+SCHEDULE TracerFlow_InterpAllQuantities AT CCTK_EVOL AFTER TracerFlow_EvolveTracers
 {
   LANG: C
   OPTIONS: global-late

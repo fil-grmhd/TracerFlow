@@ -135,7 +135,7 @@ int Read_Positions(const char *filename) {
     return 0;
 }
 
-void Manual_SetupTracers(CCTK_ARGUMENTS) {
+void TracerFlow_Manual_SetupTracers(CCTK_ARGUMENTS) {
 
     DECLARE_CCTK_ARGUMENTS
     DECLARE_CCTK_PARAMETERS
