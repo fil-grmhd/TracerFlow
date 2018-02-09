@@ -24,10 +24,7 @@
 #include <util_String.h>
 
 #include "Extras.hh"
-
-extern "C" {
-#include "OutputUtils.h"
-}
+#include "OutputUtils.hh"
 
 typedef struct {
   char const * name;
