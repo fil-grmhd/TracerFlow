@@ -14,22 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-#ifndef TRACERFLOW_INTERP_QUANT_HH
-#define TRACERFLOW_INTERP_QUANT_HH
-
+#include <vector>
+#include <string>
 #include "cctk.h"
 
-// Interpolates advection velocity to given tracer positions
-void TracerFlow_InterpAdvectionVelocity(cGH *cctkGH,
-                                        int const num_tracers,
-                                        CCTK_REAL * t_x,
-                                        CCTK_REAL * t_y,
-                                        CCTK_REAL * t_z,
-                                        CCTK_REAL * t_velx,
-                                        CCTK_REAL * t_vely,
-                                        CCTK_REAL * t_velz,
-                                        CCTK_REAL * t_frozen);
+#ifndef TRACERFLOW_EXTRAS_HH
+#define TRACERFLOW_EXTRAS_HH
+
+// some global definitions used for a variable number of extra quantities
+extern std::vector<std::string> extra_var_names;
+extern std::vector<std::vector<CCTK_REAL>> tracer_extras;
 
 #endif

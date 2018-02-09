@@ -45,6 +45,12 @@ STRING coordinate_system "Coordinate system" STEERABLE=always
   "" :: "must be a registered coordinate system"
 } "cart3d"
 
+CCTK_STRING extra_vars "extra (scalar) variables to be interpolated / output at the tracer locations." STEERABLE=ALWAYS
+{
+ ".*" :: "Any Cactus variables"
+} ""
+ 
+
 ####### control output
 
 STRING tracersfile "basename for output file, actual name will depend on the other options set"

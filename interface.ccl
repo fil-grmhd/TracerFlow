@@ -2,7 +2,7 @@
 
 implements: TracerFlow
 
-inherits: HydroBase
+inherits: HydroBase ADMBase
 
 CCTK_INT FUNCTION IO_TruncateOutputFiles \
   (CCTK_POINTER_TO_CONST IN GH)
@@ -17,7 +17,8 @@ USES FUNCTION GetMPICommWorld
 
 PUBLIC:
 
-CCTK_REAL derived_quantities TYPE=GF TAGS='prolongation="none" Checkpoint="yes"'
+# CHECK: three timelvls really needed? compare to Z. Etiennes code
+CCTK_REAL derived_quantities TIMELEVELS=3 TYPE=GF TAGS='prolongation="none" Checkpoint="yes"'
 {
   adv_velx,
   adv_vely,

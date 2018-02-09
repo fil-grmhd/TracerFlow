@@ -11,7 +11,7 @@ SCHEDULE TracerFlow_ParamCheck AT CCTK_PARAMCHECK
 {
   LANG: C
   OPTIONS: GLOBAL
-} "Check parameters"
+} "Check parameters and initialize additional storage for extra vars"
 
 #SCHEDULE TracerFlow_SetupTracers AT CCTK_INITIAL AFTER HydroBase_Initial
 

@@ -27,7 +27,7 @@ extern "C" void TracerFlow_ComputeDerivedQuantities(CCTK_ARGUMENTS)
   if(step_freq <= 0)
     return;
 
-  int const gsiz = UTILS_GFSIZE(cctkGH);
+  int const gsiz = cctkGH->cctk_ash[0]*cctkGH->cctk_ash[1]*cctkGH->cctk_ash[2];
   CCTK_REAL const * velx = &vel[0*gsiz];
   CCTK_REAL const * vely = &vel[1*gsiz];
   CCTK_REAL const * velz = &vel[2*gsiz];
@@ -42,18 +42,18 @@ extern "C" void TracerFlow_ComputeDerivedQuantities(CCTK_ARGUMENTS)
           adv_vely[ijk] = alp[ijk] * vely[ijk] - betay[ijk];
           adv_velz[ijk] = alp[ijk] * velz[ijk] - betaz[ijk];
 
-        // compute covariant three velocity
-        CCTK_REAL const v_x = gxx[i]*velx[i] + gxy[i]*vely[i] + gxz[i]*velz[i];
-        CCTK_REAL const v_y = gxy[i]*velx[i] + gyy[i]*vely[i] + gyz[i]*velz[i];
-        CCTK_REAL const v_z = gxz[i]*velx[i] + gyz[i]*vely[i] + gzz[i]*velz[i];
+          // compute covariant three velocity
+          CCTK_REAL const v_x = gxx[i]*velx[i] + gxy[i]*vely[i] + gxz[i]*velz[i];
+          CCTK_REAL const v_y = gxy[i]*velx[i] + gyy[i]*vely[i] + gyz[i]*velz[i];
+          CCTK_REAL const v_z = gxz[i]*velx[i] + gyz[i]*vely[i] + gzz[i]*velz[i];
 
-        // compute approximation of E_inf, i.e. - u_t - 1
-        eninf[ijk] = - w_lorentz[ijk]
-                   * (v_x[ijk] * betax[ijk]
-                    + v_y[ijk] * betay[ijk]
-                    + v_z[ijk] * betaz[ijk]
-                    - alp[ijk])
-                   - 1.0;
+          // compute approximation of E_inf, i.e. - u_t - 1
+          eninf[ijk] = - w_lorentz[ijk]
+                     * (v_x * betax[ijk]
+                      + v_y * betay[ijk]
+                      + v_z * betaz[ijk]
+                      - alp[ijk])
+                     - 1.0;
         }
       }
     }

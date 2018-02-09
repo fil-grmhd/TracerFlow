@@ -19,20 +19,22 @@
 #include "cctk_Arguments.h"
 
 #include <util_Table.h>
+#include <vector>
 
 #include "InterpolateQuantities.hh"
+#include "Extras.hh"
 
 #define length(X) (sizeof(X)/sizeof(*X))
 
 void TracerFlow_InterpAdvectionVelocity(cGH *cctkGH,
                                         int const num_tracers,
-                                        double * t_x,
-                                        double * t_y,
-                                        double * t_z,
-                                        double * t_velx,
-                                        double * t_vely,
-                                        double * t_velz,
-                                        int * t_frozen)
+                                        CCTK_REAL * t_x,
+                                        CCTK_REAL * t_y,
+                                        CCTK_REAL * t_z,
+                                        CCTK_REAL * t_velx,
+                                        CCTK_REAL * t_vely,
+                                        CCTK_REAL * t_velz,
+                                        CCTK_REAL * t_frozen)
 {
   DECLARE_CCTK_PARAMETERS;
 
@@ -49,7 +51,7 @@ void TracerFlow_InterpAdvectionVelocity(cGH *cctkGH,
       t_vely[i] = 0;
       t_velz[i] = 0;
 
-      t_frozen[i] = 1
+      t_frozen[i] = 1;
     }
   }
 
@@ -135,6 +137,14 @@ extern "C" void TracerFlow_InterpAllQuantities(CCTK_ARGUMENTS)
     }
   }
 
+  // figure out how many tracers each process has
+  int group = CCTK_GroupIndex("TracerFlow::tracer_evol");
+  cGroupDynamicData data;
+  int retval = CCTK_GroupDynamicData(cctkGH, group, &data);
+  (void)retval;
+  // (processor) local size of the array, i.e. local number of tracers
+  int num_tracers = data.lsh[0];
+
   // get interpolator
   int const interp_handle = CCTK_InterpHandle(interpolator);
   if(interp_handle < 0)
@@ -160,42 +170,42 @@ extern "C" void TracerFlow_InterpAllQuantities(CCTK_ARGUMENTS)
       reinterpret_cast<void *>(tracer_z)
   };
 
-  // CHECK: not interpolating the adv velocity here again
-  //        could be slightly off due to RK4 substep
-  CCTK_INT const input_array_indices[] = {
+  std::vector<CCTK_INT> input_array_indices = {
       CCTK_VarIndex("HydroBase::rho"),
       CCTK_VarIndex("HydroBase::temperature"),
       CCTK_VarIndex("HydroBase::Y_e"),
       CCTK_VarIndex("HydroBase::w_lorentz"),
       CCTK_VarIndex("TracerFlow::eninf")
   };
-  int const ninputs = length(input_array_indices);
 
-  CCTK_INT const output_array_types[] = {
-      CCTK_VARIABLE_REAL,
-      CCTK_VARIABLE_REAL,
-      CCTK_VARIABLE_REAL,
-      CCTK_VARIABLE_REAL,
-      CCTK_VARIABLE_REAL
-  };
-  assert(ninputs == length(output_array_types));
+  for(auto it = extra_var_names.begin(); it < extra_var_names.end(); ++it) {
+      CCTK_INT var_idx = CCTK_VarIndex(it->c_str());
+      input_array_indices.push_back(var_idx);
+  }
 
-  void * output_arrays[] = {
+  int const ninputs = input_array_indices.size();
+
+  std::vector<CCTK_INT> output_array_types(ninputs,CCTK_VARIABLE_REAL);
+
+  std::vector<void*> output_arrays = {
       reinterpret_cast<void *>(tracer_rho),
-      reinterpret_cast<void *>(tracer_temperature),
+      reinterpret_cast<void *>(tracer_temp),
       reinterpret_cast<void *>(tracer_ye),
       reinterpret_cast<void *>(tracer_wlorentz),
-      reinterpret_cast<void *>(tracer_einf)
+      reinterpret_cast<void *>(tracer_eninf)
   };
-  assert(ninputs == length(output_arrays));
+
+  for(auto it = tracer_extras.begin(); it < tracer_extras.end(); ++it) {
+      output_arrays.push_back(reinterpret_cast<void *>(it->data()));
+  }
 
   // Actual interpolation
   int const ierr =
     CCTK_InterpGridArrays (cctkGH, 3,
                            interp_handle, options_handle, coords_handle,
                            num_tracers, CCTK_VARIABLE_REAL, interp_coords,
-                           ninputs, input_array_indices,
-                           ninputs, output_array_types, output_arrays);
+                           ninputs, input_array_indices.data(),
+                           ninputs, output_array_types.data(), output_arrays.data());
   assert (ierr == 0);
 
   Util_TableDestroy (options_handle);
