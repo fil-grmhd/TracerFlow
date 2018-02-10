@@ -1,0 +1,410 @@
+Cactus::cctk_run_title = "DuezA_Illinois_no_sym_80**3"
+
+Cactus::cctk_full_warnings         = no
+Cactus::highlight_warning_messages = no
+
+Cactus::terminate       = "runtime"
+Cactus::max_runtime =  2420
+
+
+
+ActiveThorns = "IOUtil"
+
+
+ActiveThorns = "AEILocalInterp"
+
+ActiveThorns = "Constants"
+
+ActiveThorns = "Fortran"
+
+ActiveThorns = "GSL"
+
+ActiveThorns = "GenericFD"
+
+ActiveThorns = "HDF5"
+
+ActiveThorns = "LoopControl"
+ActiveThorns = "CarpetIOASCII CarpetIOScalar CarpetIOHDF5 CarpetIOBasic"
+
+
+ActiveThorns = "hydrobase InitBase"
+ActiveThorns = "Constants NaNChecker"
+ActiveThorns = "InitBase Slab"
+
+
+
+ActiveThorns = "Carpet CarpetLib CarpetInterp CarpetReduce"
+
+Carpet::verbose           = no
+Carpet::veryverbose       = no
+Carpet::schedule_barriers = no
+Carpet::storage_verbose   = no
+CarpetLib::output_bboxes  = no
+
+Carpet::domain_from_coordbase = yes
+
+driver::ghost_size       = 3
+Carpet::use_buffer_zones = yes
+
+Carpet::prolongation_order_space = 5
+Carpet::prolongation_order_time  = 2
+
+Carpet::convergence_level = 0
+
+Carpet::init_fill_timelevels = yes
+
+Carpet::poison_new_timelevels = yes
+CarpetLib::poison_new_memory  = yes
+
+Carpet::output_timers_every      = 5120
+CarpetLib::print_timestats_every = 5120
+CarpetLib::print_memstats_every  = 5120
+
+
+
+ActiveThorns = "NaNChecker"
+
+NaNChecker::check_every     = 1024
+NaNChecker::verbose         = "standard"
+NaNChecker::action_if_found = "abort"
+NaNChecker::check_vars      = "
+        ML_BSSN::ML_log_confac
+        ML_BSSN::ML_metric
+        ML_BSSN::ML_trace_curv
+        ML_BSSN::ML_curv
+        ML_BSSN::ML_Gamma
+        ML_BSSN::ML_lapse
+        ML_BSSN::ML_shift
+        ML_BSSN::ML_dtlapse
+        ML_BSSN::ML_dtshift
+        ADMBase::metric
+        ADMBase::curv
+        ADMBase::lapse
+        ADMBase::shift
+        ADMBase::dtlapse
+        ADMBase::dtshift
+	IllinoisGRMHD::grmhd_conservatives
+"
+
+
+
+ActiveThorns = "Boundary CartGrid3D CoordBase SymBase"
+
+CoordBase::domainsize = "minmax"
+
+CoordBase::xmin =  -80.00
+CoordBase::ymin =  -80.00
+CoordBase::zmin =  -80.00
+CoordBase::xmax = 80.00
+CoordBase::ymax = 80.00
+CoordBase::zmax = 80.00
+
+CoordBase::spacing = "numcells"
+CoordBase::ncells_x =  160
+CoordBase::ncells_y =  160
+CoordBase::ncells_z =  160
+
+
+CoordBase::boundary_size_x_lower     = 3
+CoordBase::boundary_size_y_lower     = 3
+CoordBase::boundary_size_z_lower     = 3
+CoordBase::boundary_size_x_upper     = 3
+CoordBase::boundary_size_y_upper     = 3
+CoordBase::boundary_size_z_upper     = 3
+
+
+CartGrid3D::type = "coordbase"
+CartGrid3D::domain       = "full"
+CartGrid3D::avoid_origin = "no"
+
+
+ActiveThorns = "SphericalSurface"
+
+
+
+ActiveThorns = "CarpetRegrid2"
+Carpet::max_refinement_levels=2
+
+CarpetRegrid2::regrid_every = 0
+CarpetRegrid2::num_centres  = 1
+CarpetRegrid2::num_levels_1 = 2
+CarpetRegrid2::radius_1[2]   = 20.0  # 
+CarpetRegrid2::radius_1[1]   = 40.0   # 
+
+ActiveThorns = "MoL Time"
+
+MoL::ODE_Method             = "RK4"
+MoL::MoL_Intermediate_Steps = 4
+MoL::MoL_Num_Scratch_Levels = 1
+MoL::initial_data_is_crap  ="yes"
+InitBase::initial_data_setup_method     =       "init_all_levels"
+
+
+Carpet::num_integrator_substeps = 4
+
+Time::dtfac = 0.3
+
+
+
+HydroBase::timelevels        = 3
+HydroBase::prolongation_type ="ENO"
+
+SpaceMask::use_mask = yes
+
+
+
+#################### Illinois GRMHD ###############################
+ActiveThorns = "IllinoisGRMHD"
+ActiveThorns = "ID_converter_ILGRMHD Seed_Magnetic_Fields"
+
+#============= Initial Data (Illinois) ===========================
+
+ID_converter_ILGRMHD::Gamma_Initial = 2.0
+ID_converter_ILGRMHD::K_Initial     = 166.330753
+ID_converter_ILGRMHD::recompute_pressure     = yes
+
+Seed_Magnetic_Fields::enable_IllinoisGRMHD_staggered_A_fields = yes
+Seed_Magnetic_Fields::A_b = 10.0
+Seed_Magnetic_Fields::compute_P_cut = yes
+
+#================================================================
+
+CarpetLib::support_staggered_operators = "yes"
+
+IllinoisGRMHD::conserv_to_prims_debug = 0
+IllinoisGRMHD::Psi6threshold = 15.0
+IllinoisGRMHD::damp_lorenz = 0.9
+
+IllinoisGRMHD::tau_atm   = 1.0e-15  #might be too small, although it is larger than rho_atm*eps_atm
+IllinoisGRMHD::rho_b_atm = 1.0e-11
+
+
+IllinoisGRMHD::gamma_th=2.0
+IllinoisGRMHD::K_poly=166.330753
+IllinoisGRMHD::neos=1
+#============= convert to HydroBase ==============================
+#ActiveThorns= "Convert_to_HydroBase"
+
+####################################################################
+
+############### AngularMomentum ####################################
+#ActiveThorns="AngularMomenta"
+#angularmomenta::compute_specific_angular_momentum = yes
+
+
+####################################################################
+
+########################### SpaceTime ##############################
+ActiveThorns = "ADMBase ADMCoupling ADMMacros CoordGauge HydroBase SpaceMask StaticConformal TmunuBase"
+ActiveThorns = "GenericFD NewRad"
+ActiveThorns = "ML_BSSN ML_BSSN_Helper"
+
+TmunuBase::stress_energy_storage = yes
+TmunuBase::stress_energy_at_RHS  = yes
+TmunuBase::timelevels            = 1
+TmunuBase::prolongation_type     = "none"
+TmunuBase::support_old_CalcTmunu_mechanism = "no"
+
+ADMMacros::spatial_order = 4
+
+
+ADMBase::initial_dtlapse        = "zero"
+ADMBase::initial_dtshift        = "zero"
+
+ADMBase::evolution_method         = "ML_BSSN"
+ADMBase::lapse_evolution_method   = "ML_BSSN"
+ADMBase::shift_evolution_method   = "ML_BSSN"
+ADMBase::dtlapse_evolution_method = "ML_BSSN"
+ADMBase::dtshift_evolution_method = "ML_BSSN"
+
+
+
+#Evolve shift & lapse:
+ML_BSSN::timelevels = 3
+ML_BSSN::harmonicN                      = 1      # 1+log
+ML_BSSN::harmonicF                      = 2.0    # 1+log
+ML_BSSN::ShiftGammaCoeff                = 0.75
+ML_BSSN::BetaDriver                     = 1.0
+ML_BSSN::AlphaDriver         = 0.0
+ML_BSSN::advectLapse = 1
+ML_BSSN::advectShift = 1
+ML_BSSN::evolveA         = 1.0
+ML_BSSN::evolveB         = 1.0
+
+
+ML_BSSN::MinimumLapse        = 1.0e-9
+
+ML_BSSN::initial_boundary_condition="extrapolate-gammas"
+ML_BSSN::rhs_boundary_condition="NewRad"
+
+ML_BSSN::ML_log_confac_bound = "none"
+ML_BSSN::ML_metric_bound     = "none"
+ML_BSSN::ML_Gamma_bound      = "none"
+ML_BSSN::ML_trace_curv_bound = "none"
+ML_BSSN::ML_curv_bound       = "none"
+ML_BSSN::ML_lapse_bound      = "none"
+ML_BSSN::ML_dtlapse_bound    = "none"
+ML_BSSN::ML_shift_bound      = "none"
+ML_BSSN::ML_dtshift_bound    = "none"
+
+####################################################################
+ActiveThorns= "AngularMomenta"
+AngularMomenta::compute_specific_angular_momentum = yes
+
+
+########################### Initial Data ##############################
+ActiveThorns = "RNSID_IL"
+
+admbase::initial_data				=	"rnsid_IL"
+admbase::initial_lapse				=	"rnsid_IL"
+admbase::initial_shift				=	"rnsid_IL"
+admbase::metric_type				=	"physical"
+
+rnsid_IL::rho_central 	                           = 0.0003291
+rnsid_IL::rho_abs_atmo				   = 1.0e-11
+
+rnsid_IL::axes_ratio                               =       0.3061     
+rnsid_IL::accuracy                                 =       1.0e-9
+rnsid_IL::rotation_type                            =       "diff"       
+
+rnsid_IL::RNS_Gamma                                =       2.0
+rnsid_IL::RNS_K                                    =       166.330753  
+rnsid_IL::radius				        =       10
+
+rnsid_IL::recover_2Dmodel                          =       "no"
+rnsid_IL::save_2Dmodel                             =       "no"
+
+rnsid_IL::mdiv                                     =     301   #81
+rnsid_IL::sdiv                                     =     601  #151
+
+####################################################################
+
+####################### Dissipation ################################
+
+ActiveThorns = "Dissipation"
+
+Dissipation::order = 5
+Dissipation::vars  = "
+        ML_BSSN::ML_log_confac
+        ML_BSSN::ML_metric
+        ML_BSSN::ML_trace_curv
+        ML_BSSN::ML_curv
+        ML_BSSN::ML_Gamma
+        ML_BSSN::ML_lapse
+        ML_BSSN::ML_shift
+        ML_BSSN::ML_dtlapse
+        ML_BSSN::ML_dtshift
+"
+
+####################################################################
+
+ActiveThorns = "ADMConstraints"
+
+ADMConstraints::constraints_persist    = yes
+ADMConstraints::constraints_timelevels = 3
+
+
+
+
+# =============================================================================
+# Output
+# =============================================================================
+IOUtil::strict_io_parameter_check = "yes"
+IOUtil::parfile_write             = "copy"
+
+IOBasic::outInfo_reductions		= "norm1 norm2 maximum minimum"
+
+IOBasic::outInfo_vars       = "
+ADMBase::lapse
+IllinoisGRMHD::rho_b
+ADMConstraints::hamiltonian 
+Carpet::physical_time_per_hour
+"
+
+IOScalar::outScalar_vars      = "
+					  ADMConstraints::hamiltonian
+				          ADMConstraints::momentum
+					  admbase::lapse
+					  IllinoisGRMHD::rho_star
+					  IllinoisGRMHD::grmhd_primitives_allbutBi
+					  IllinoisGRMHD::grmhd_primitives_Bi
+					  
+"
+IOASCII::out0D_vars      = "
+					  AngularMomenta::AngularMomenta_integrated
+					  AngularMomenta::AngularMomenta_specific_angular_momentum
+"
+
+
+IOHDF5::out1D_vars      = "
+				            ADMBase::lapse
+					    ADMBase::shift
+					    ADMConstraints::hamiltonian
+					    ADMConstraints::momentum
+					    IllinoisGRMHD::grmhd_primitives_allbutBi
+					    IllinoisGRMHD::grmhd_primitives_Bi
+"
+IOHDF5::out2D_vars      = "
+					ADMBase::lapse
+					ADMBase::shift
+					IllinoisGRMHD::grmhd_primitives_allbutBi
+					IllinoisGRMHD::grmhd_primitives_Bi
+"
+
+IOHDF5::out3D_vars      = "
+"
+
+IOBasic::outInfo_criterion              = "divisor"
+IOBasic::outInfo_every			= 64
+
+IOScalar::outScalar_criterion           = "divisor"
+IOScalar::outScalar_dir                 = "data_Scalar"
+IOScalar::outScalar_every              	=  64
+IOScalar::outScalar_reductions          = "average minimum maximum norm1 norm2 norm_inf"
+
+IOASCII::out0D_criterion                = "divisor"
+IOASCII::out0D_dir                      = "data_asc_0D"
+IOASCII::out0D_every                    = 64
+
+
+IOHDF5::out1D_criterion                 = "divisor"
+IOHDF5::out1D_d                         = "no"
+IOHDF5::out1D_dir                       = "data_hdf5_1D"
+IOHDF5::out1D_every                        = 64
+
+
+IOHDF5::out2D_criterion                 = "divisor"
+IOHDF5::out2D_dir                       = "data_hdf5_2D"
+IOHDF5::out2D_every                        = 64
+
+IOHDF5::out3D_criterion                 = "divisor"
+#IOHDF5::out3D_dir                      = "data_hdf5_3D"
+IOHDF5::out3D_every                        = 100000000
+
+
+# To reduce the number of files in the output directory
+IOScalar::all_reductions_in_one_file    = "no"
+IOScalar::one_file_per_group            = "no"
+IOASCII::one_file_per_group             = "no"
+IOHDF5::one_file_per_group              = "no"
+
+# To reduce the size of files (Caution, it might reduce the speed a little bit):
+IOHDF5::compression_level               = 7
+
+# Output an index file for each output file
+#IOHDF5::output_index        = "yes"
+
+###################### Checkpointing #################################################
+
+IOUtil::checkpoint_dir          = "../checkpoint"
+IOUtil::checkpoint_every_walltime_hours = 23.5
+IOUtil::checkpoint_keep         = 3
+IOUtil::checkpoint_on_terminate = "yes"
+IOUtil::out_dir                 = $parfile
+IOUtil::out_fileinfo            = "none"
+IOUtil::recover                 = "autoprobe"
+IOUtil::recover_dir             = "../checkpoint"
+IOHDF5::checkpoint	 	= "yes"
+
+######################################################################################
+

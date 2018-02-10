@@ -46,7 +46,8 @@ extern "C" void TracerFlow_ParamCheck(CCTK_ARGUMENTS) {
     std::istringstream extras_stream(extra_vars);
     std::string line;
     while(std::getline(extras_stream, line)) {
-      extra_var_names.push_back(line);
+      if(line != "" && line.at(0) != '#')
+        extra_var_names.push_back(line);
     }
 
     // now check variable indices and create storage for them

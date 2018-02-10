@@ -13,34 +13,52 @@ SCHEDULE TracerFlow_ParamCheck AT CCTK_PARAMCHECK
   OPTIONS: GLOBAL
 } "Check parameters and initialize additional storage for extra vars"
 
-#SCHEDULE TracerFlow_SetupTracers AT CCTK_INITIAL AFTER HydroBase_Initial
+if(manual_pos_tracers) {
+  SCHEDULE TracerFlow_Manual_SetupTracers AT CCTK_POSTPOSTINITIAL
+  {
+    LANG: C
+    OPTION: global
+  } "Manually setup tracers"
+}
 
-    SCHEDULE TracerFlow_Manual_SetupTracers AT CCTK_POSTPOSTINITIAL
+if(put_some_random_tracers) {
+  SCHEDULE TracerFlow_Random_SetupTracers AT CCTK_POSTPOSTINITIAL
+  {
+    LANG: C
+    OPTION: global
+  } "Randomly setup tracers"
+}
+
+SCHEDULE TracerFlow_InterpAllQuantities AT CCTK_POSTPOSTINITIAL \
+    AFTER TracerFlow_Manual_SetupTracers AFTER TracerFlow_Random_SetupTracers
+{
+  LANG: C
+  OPTIONS: global
+} "Interpolate all quantities to the tracer locations"
+
+if(reset_tracers_on_recover) {
+  if(manual_pos_tracers) {
+    SCHEDULE TracerFlow_Manual_SetupTracers AT POST_RECOVER_VARIABLES
     {
       LANG: C
       OPTION: global
     } "Manually setup tracers"
-
-    SCHEDULE TracerFlow_InterpAllQuantities AT CCTK_POSTPOSTINITIAL \
-        AFTER Manual_SetupTracers
+  }
+  
+  if(put_some_random_tracers) {
+    SCHEDULE TracerFlow_Random_SetupTracers AT POST_RECOVER_VARIABLES
     {
       LANG: C
-      OPTIONS: global
-    } "Interpolate basic physical quantities at the tracer locations"
+      OPTION: global
+    } "Randomly setup tracers"
+  }
 
-if(reset_tracers_on_recover) {
-      SCHEDULE TracerFlow_Manual_SetupTracers AT POST_RECOVER_VARIABLES
-      {
-        LANG: C
-        OPTION: global
-      } "Manually setup tracers"
-
-      SCHEDULE TracerFlow_InterpAllQuantities AT POST_RECOVER_VARIABLES \
-        AFTER Manual_SetupTracers
-      {
-        LANG: C
-        OPTIONS: global
-      } "Interpolate basic physical quantities at the tracer locations"
+  SCHEDULE TracerFlow_InterpAllQuantities AT POST_RECOVER_VARIABLES \
+    AFTER TracerFlow_Manual_SetupTracers AFTER TracerFlow_Random_SetupTracers
+  {
+    LANG: C
+    OPTIONS: global
+  } "Interpolate all quantities to the tracer locations"
 }
 
 SCHEDULE TracerFlow_AdvectTracers AT CCTK_EVOL AFTER MoL_Evolution

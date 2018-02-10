@@ -1,0 +1,424 @@
+Cactus::cctk_full_warnings         = no
+Cactus::highlight_warning_messages = "yes"
+
+Cactus::terminate       = "never"
+#Cactus::cctk_final_time = 200000000
+
+ActiveThorns = "TerminationTrigger"
+
+#TerminationTrigger::max_walltime                            = @WALLTIME_HOURS@
+#TerminationTrigger::on_remaining_walltime                   = 30
+TerminationTrigger::create_termination_file                 = "yes"
+TerminationTrigger::termination_from_file                   = "yes"
+TerminationTrigger::termination_file                        = "TERMINATE"
+
+CarpetIOHDF5::checkpoint        = "yes"
+CarpetIOHDF5::use_reflevels_from_checkpoint = "yes"
+
+IOUtil::checkpoint_on_terminate     = "no"
+IOUtil::checkpoint_every        = 8192
+IOUtil::checkpoint_keep     = 2
+IOUtil::recover         = "autoprobe"
+IOUtil::checkpoint_dir      = "./checkpoint"
+IOUtil::recover_dir         = "./checkpoint"
+
+# omitting: HRSCCore
+
+ActiveThorns = "IOUtil"
+ActiveThorns = "AEILocalInterp"
+ActiveThorns = "Constants"
+ActiveThorns = "Fortran"
+ActiveThorns = "GSL"
+ActiveThorns = "GenericFD"
+ActiveThorns = "HDF5"
+ActiveThorns = "LoopControl"
+ActiveThorns = "CarpetIOASCII CarpetIOScalar CarpetIOHDF5 CarpetIOBasic"
+ActiveThorns = "hydrobase InitBase"
+ActiveThorns = "Constants NaNChecker"
+ActiveThorns = "InitBase Slab" # carpetslab instead?
+ActiveThorns = "Carpet CarpetLib CarpetInterp CarpetReduce"
+ActiveThorns = "Volomnia"
+ActiveThorns = "SystemStatistics"
+
+Carpet::verbose           = no
+Carpet::veryverbose       = no
+Carpet::schedule_barriers = no
+Carpet::storage_verbose   = no
+CarpetLib::output_bboxes  = no
+
+Carpet::domain_from_coordbase = yes
+
+driver::ghost_size       = 3
+Carpet::use_buffer_zones = yes
+
+Carpet::prolongation_order_space = 5
+Carpet::prolongation_order_time  = 2
+
+Carpet::convergence_level = 0
+
+Carpet::init_fill_timelevels = yes
+
+Carpet::poison_new_timelevels = yes
+CarpetLib::poison_new_memory  = yes
+
+Carpet::output_timers_every      = 6400
+CarpetLib::print_timestats_every = 6400
+CarpetLib::print_memstats_every  = 6400
+
+ActiveThorns = "TimerReport"
+TimerReport::out_every      = 6400
+TimerReport::output_all_timers_readable     = "yes"
+
+
+
+ActiveThorns = "NaNChecker"
+
+NaNChecker::check_every     = 512
+NaNChecker::verbose         = "standard"
+NaNChecker::action_if_found = "abort"
+NaNChecker::check_vars      = "
+        ML_CCZ4::ML_log_confac
+        ML_CCZ4::ML_metric
+        ML_CCZ4::ML_trace_curv
+        ML_CCZ4::ML_curv
+        ML_CCZ4::ML_Gamma
+        ML_CCZ4::ML_lapse
+        ML_CCZ4::ML_shift
+        ML_CCZ4::ML_dtlapse
+        ML_CCZ4::ML_dtshift
+	HydroBase::w_lorentz
+        ADMBase::metric
+        ADMBase::curv
+        ADMBase::lapse
+        ADMBase::shift
+        ADMBase::dtlapse
+        ADMBase::dtshift
+        HydroBase::rho
+        HydroBase::press
+        HydroBase::eps
+        HydroBase::vel
+"
+
+
+
+ActiveThorns = "Boundary CartGrid3D CoordBase SymBase"
+
+CoordBase::domainsize = "minmax"
+
+# 200 grid points in each direction:
+CoordBase::xmin =    -80.00
+CoordBase::ymin =    -80.00
+CoordBase::zmin =    -80.00
+CoordBase::xmax = 80.00
+CoordBase::ymax = 80.00
+CoordBase::zmax = 80.00
+CoordBase::ncells_x   =    160
+CoordBase::ncells_y   =    160
+CoordBase::ncells_z   =    160
+
+CoordBase::boundary_size_x_lower     = 3
+CoordBase::boundary_size_y_lower     = 3
+CoordBase::boundary_size_z_lower     = 3
+CoordBase::boundary_size_x_upper     = 3
+CoordBase::boundary_size_y_upper     = 3
+CoordBase::boundary_size_z_upper     = 3
+
+CoordBase::boundary_shiftout_x_lower = 1
+CoordBase::boundary_shiftout_y_lower = 1
+CoordBase::boundary_shiftout_z_lower = 1
+
+CartGrid3D::type = "coordbase"
+CartGrid3D::domain       = "full"
+CartGrid3D::avoid_origin = "no"
+#CartGrid3D::rotation_axis="z"
+#CartGrid3D::bitant_plane="xz"
+
+ActiveThorns = "CarpetRegrid2"
+Carpet::max_refinement_levels           = 3
+
+CarpetRegrid2::regrid_every = 0
+CarpetRegrid2::num_centres              = 1
+
+CarpetRegrid2::num_levels_1             = 3
+CarpetRegrid2::radius_1             [1] = 40.0
+CarpetRegrid2::radius_1             [2] = 20.0
+
+
+ActiveThorns = "MoL Time"
+
+MoL::ODE_Method             = "RK3"
+MoL::MoL_Intermediate_Steps = 3
+MoL::MoL_Num_Scratch_Levels = 2
+
+Time::dtfac = 0.25
+
+
+
+ActiveThorns = "ADMBase ADMCoupling ADMMacros CoordGauge HydroBase SpaceMask StaticConformal TmunuBase"
+
+ADMMacros::spatial_order = 4
+
+HydroBase::timelevels        = 3
+HydroBase::prolongation_type = "ENO"
+
+TmunuBase::stress_energy_storage = yes
+TmunuBase::stress_energy_at_RHS  = yes
+TmunuBase::timelevels            = 1
+TmunuBase::prolongation_type     = "none"
+
+SpaceMask::use_mask = yes
+
+ActiveThorns = "EOS_Base "
+
+ActiveThorns = "SphericalSurface"
+ActiveThorns = "ML_CCZ4 ML_CCZ4_Helper NewRad Dissipation"
+
+ADMBase::evolution_method               = "ML_CCZ4"
+ADMBase::lapse_evolution_method         = "ML_CCZ4"
+ADMBase::shift_evolution_method         = "ML_CCZ4"
+ADMBase::dtlapse_evolution_method               = "ML_CCZ4"
+ADMBase::dtshift_evolution_method               = "ML_CCZ4"
+
+ML_CCZ4::GammaShift                     = 0.5
+ML_CCZ4::dampk1                 = 0.036  # ~ [0.02, 0.1]/M
+ML_CCZ4::dampk2                 = 0.0
+ML_CCZ4::harmonicN                      = 1.0    # 1+log
+ML_CCZ4::harmonicF                      = 2.0    # 1+log
+ML_CCZ4::ShiftGammaCoeff                = 0.75
+ML_CCZ4::AlphaDriver            = 0.0
+ML_CCZ4::BetaDriver                     = 0.3    # ~ [1, 2] / M (\eta)
+
+ML_CCZ4::advectLapse            = 1
+ML_CCZ4::advectShift            = 1
+
+ML_CCZ4::MinimumLapse           = 1.0e-8
+ML_CCZ4::conformalMethod                = 1      # 1 for W
+
+ML_CCZ4::initial_boundary_condition          = "extrapolate-gammas"
+ML_CCZ4::rhs_boundary_condition              = "NewRad"
+Boundary::radpower                      = 2
+
+ML_CCZ4::ML_log_confac_bound            = "none"
+ML_CCZ4::ML_metric_bound                = "none"
+ML_CCZ4::ML_Gamma_bound         = "none"
+ML_CCZ4::ML_trace_curv_bound            = "none"
+ML_CCZ4::ML_curv_bound          = "none"
+ML_CCZ4::ML_lapse_bound         = "none"
+ML_CCZ4::ML_dtlapse_bound               = "none"
+ML_CCZ4::ML_shift_bound         = "none"
+ML_CCZ4::ML_dtshift_bound               = "none"
+ML_CCZ4::ML_Theta_bound         = "none"
+
+ML_CCZ4::fdOrder                        = 4
+THC_Core::fd_order                      = 4
+
+Dissipation::order                      = 5
+Dissipation::epsdis                     = 0.2
+Dissipation::vars                       = "
+ML_CCZ4::ML_log_confac
+ML_CCZ4::ML_metric
+ML_CCZ4::ML_trace_curv
+ML_CCZ4::ML_curv
+ML_CCZ4::ML_Gamma
+ML_CCZ4::ML_lapse
+ML_CCZ4::ML_shift
+ML_CCZ4::ML_dtlapse
+ML_CCZ4::ML_dtshift
+ML_CCZ4::ML_Theta
+"
+
+ActiveThorns = "RNSID PizzaBase PizzaIDBase PizzaNumUtils"
+
+# LoreneMNS at this point
+ADMBase::initial_data    = "RNSID"
+ADMBase::initial_lapse   = "RNSID"
+ADMBase::initial_shift   = "RNSID"
+ADMBase::initial_dtlapse = "zero"
+ADMBase::initial_dtshift = "zero"
+HydroBase::initial_hydro = "RNSID"
+
+RNSID::rho_central                              = 0.0003291
+RNSID::rho_abs_atmo           = 1.0e-11
+
+RNSID::axes_ratio                               =       0.3061
+RNSID::accuracy                                 =       1.0e-9
+RNSID::rotation_type                            =       "diff"
+
+RNSID::RNS_Gamma                                =       2.0
+RNSID::RNS_K                                    =       166.330753
+RNSID::radius                =       10
+
+RNSID::recover_2Dmodel                          =       "no"
+RNSID::save_2Dmodel                             =       "no"
+
+RNSID::mdiv                                     =     301   #81
+RNSID::sdiv                                     =     601  #151
+
+# File describing a one-parametric EOS in Pizza format. Used only for initial data.
+PizzaIDBase::eos_from          = "Nowhere"
+
+# Geometric unit system for initial data, specified by length unit.
+# use CACTUS units
+PizzaBase::length_unit		= 1476.7161818921163
+
+
+# =============================================================================
+# Templated hydrodynamics code
+# =============================================================================
+ActiveThorns = "THC_Core THC_Tracer EOS_Thermal EOS_Thermal_Idealgas"
+HydroBase::evolution_method		= "THCode"
+THC_Core::eos_type			= "ideal"
+
+THC_Core::bc_type			= "none"
+
+# atmo should be set down to e-15 some time. Federico likes this ;-D
+THC_Core::atmo_rho			= 1e-10
+THC_Core::atmo_eps			= 1e-8
+
+EOS_Thermal::evol_eos_name		= "IdealGas"
+EOS_Thermal_IdealGas::index_n		= 1
+
+# out of range: eps > 2.
+# eps set back from 20 to 2
+EOS_Thermal_IdealGas::eps_max  = 2
+
+
+ActiveThorns = "ML_ADMConstraints" # added ML_ from MHD
+
+#ADMConstraints::constraints_persist    = yes
+#ADMConstraints::constraints_timelevels = 3
+
+ActiveThorns = "TracerFlow"
+
+TracerFlow::ntracers = 10000
+TracerFlow::put_some_random_tracers = yes
+# do analytic RK4 test
+#TracerFlow::debug = 1
+TracerFlow::step_freq = 1
+TracerFlow::coord_bound = 40.0
+# interpolate rho twice to test the extra fields
+TracerFlow::extra_vars = "
+HydroBase::rho
+"
+TracerFlow::outTracers_every = 32
+
+# =============================================================================
+# Output
+# =============================================================================
+IO::out_dir = "data/"
+IOUtil::strict_io_parameter_check = "yes"
+IOUtil::parfile_write             = "copy"
+IOBasic::outInfo_every			= 64
+
+IOBasic::outInfo_reductions		= "average maximum minimum norm_inf norm1 norm2"
+
+IOBasic::outInfo_vars       = "
+Carpet::physical_time_per_hour
+    SystemStatistics::maxrss_mb
+    SystemStatistics::swap_used_mb
+    ADMBase::lapse
+    HydroBase::rho
+"
+
+# Scalar information:
+IOScalar::outScalar_vars      = "
+	admbase::lapse
+	admbase::shift
+	admbase::curv
+	admbase::metric
+	hydrobase::rho
+	hydrobase::press
+	hydrobase::eps
+	hydrobase::w_lorentz
+	hydrobase::vel
+	THC_Core::dens
+	THC_Core::csound
+	THC_Core::tau
+	THC_Core::scon
+	THC_Core::volform
+	ML_ADMConstraints::ML_Ham
+	ML_ADMConstraints::ML_mom
+"
+
+IOScalar::outScalar_criterion           = "divisor"
+IOScalar::outScalar_every               = 64
+IOScalar::outScalar_reductions          = "average minimum maximum norm1 norm2 sum"
+
+# 0D ascii whatever
+IOASCII::out0D_vars = "
+    Carpet::physical_time_per_hour
+    Volomnia::grid_volume
+    Volomnia::cell_volume
+	Carpet::timing
+"
+
+IOASCII::out0D_criterion = "divisor"
+IOASCII::out0D_every = 64
+
+IOASCII::out1D_vars      = "
+	ADMBase::lapse
+	ADMBase::shift
+	ADMBase::curv
+	ADMBase::metric
+	hydrobase::rho
+	hydrobase::press
+	hydrobase::eps
+	hydrobase::w_lorentz
+	hydrobase::vel
+    HydroBase::entropy
+	THC_Core::scon
+	THC_Core::dens
+	THC_Core::tau
+    THC_Core::bitmask
+    THC_Core::csound
+    THC_Core::volform
+	ML_ADMConstraints::ML_Ham
+	ML_ADMConstraints::ML_mom
+"
+
+IOASCII::out1D_criterion                = "divisor"
+IOASCII::out1D_d                        = "no"
+IOASCII::out1D_every                    = 64
+
+IOHDF5::out2D_vars = "
+	ADMBase::lapse
+	ADMBase::shift
+	ADMBase::curv
+	ADMBase::metric
+    HydroBase::eps
+    HydroBase::press
+    HydroBase::rho
+    HydroBase::vel
+    HydroBase::w_lorentz
+    HydroBase::entropy
+    THC_Core::bitmask
+	THC_Core::dens
+	THC_Core::volform
+	THC_Core::csound
+	ML_ADMConstraints::ML_Ham
+	ML_ADMConstraints::ML_mom
+"
+
+IOHDF5::out2D_criterion                 = "divisor"
+IOHDF5::out2D_every                     = 64
+IOHDF5::output_index                    = "yes"
+
+#CarpetIOHDF5::out_vars  = "
+#"
+#CarpetIOHDF5::out_every     = 64
+
+# To reduce the number of files in the output directory
+IOScalar::all_reductions_in_one_file    = "no"
+IOScalar::one_file_per_group            = "no"
+IOASCII::one_file_per_group             = "no"
+IOHDF5::one_file_per_group              = "no"
+
+# To reduce the size of files (Caution, it might reduce the speed a little bit):
+#IOHDF5::compression_level               = 7
+
+# These seem to create problems in the 2D output
+#IOHDF5::out3D_ghosts       = "no"
+#IOHDF5::out3D_outer_ghosts = "no"
+
+# Output an index file for each output file
+#IOHDF5::output_index        = "yes"

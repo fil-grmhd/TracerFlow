@@ -1,7 +1,7 @@
 # Main make.code.defn file for thorn TracerFlow
 
 # Source files in this directory
-SRCS = EvolveTracers.cc ComputeDerived.cc ManualSetupTracers.c OutputTracers.cc OutputUtils.cc InterpolateQuantities.cc ParamCheck.cc
+SRCS = EvolveTracers.cc ComputeDerived.cc ManualSetupTracers.c RandomSetupTracers.cc OutputTracers.cc OutputUtils.cc InterpolateQuantities.cc ParamCheck.cc
 
 # Subdirectories containing source files
 SUBDIRS = 

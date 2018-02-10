@@ -56,7 +56,7 @@ void TracerFlow_OutputTracers(CCTK_ARGUMENTS)
   cGroupDynamicData groupdata;
 
   // collect information about tracers get data
-  group = CCTK_GroupIndex("TracerFlow::tracervars");
+  group = CCTK_GroupIndex("TracerFlow::tracer_evol");
   ierr = CCTK_GroupDynamicData(cctkGH, group, &groupdata);
   if(ierr != 0)
   {
