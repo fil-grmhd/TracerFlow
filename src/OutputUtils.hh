@@ -14,8 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef TRACERFLOW_OUTPUT_H
-#define TRACERFLOW_OUTPUT_H
+#ifndef TRACERFLOW_OUTPUT_HH
+#define TRACERFLOW_OUTPUT_HH
 
 #include "cctk.h"
 #include "cctk_Arguments.h"

@@ -46,7 +46,7 @@ static void trcrs_free() {
     trcrs = NULL;
 }
 
-int Read_Positions(const char *filename) {
+int TracerFlow_Read_Positions(const char *filename) {
 
     double * coords = NULL;
     int rank;
@@ -147,7 +147,7 @@ void TracerFlow_Manual_SetupTracers(CCTK_ARGUMENTS) {
     assert(NULL == trcrs);
     trcrs = malloc(sizeof(myTracers)); assert(trcrs);
 
-    Err =  Read_Positions(tracers_pos_file); assert(Err==0);
+    Err =  TracerFlow_Read_Positions(tracers_pos_file); assert(Err==0);
 
     int group = CCTK_GroupIndex("TracerFlow::tracer_evol");
     cGroupDynamicData data;

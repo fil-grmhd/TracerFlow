@@ -40,7 +40,7 @@ void debug_analytic_test(int num_tracers,double *x_posn,double *y_posn,double *z
   }
 }
 
-extern "C" void TracerFlow_Advect(CCTK_ARGUMENTS)
+extern "C" void TracerFlow_AdvectTracers(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;

@@ -43,7 +43,7 @@ if(reset_tracers_on_recover) {
       } "Interpolate basic physical quantities at the tracer locations"
 }
 
-SCHEDULE TracerFlow_EvolveTracers AT CCTK_EVOL AFTER MoL_Evolution
+SCHEDULE TracerFlow_AdvectTracers AT CCTK_EVOL AFTER MoL_Evolution
 {
   LANG: C
   OPTION: global-late
@@ -53,15 +53,9 @@ SCHEDULE TracerFlow_InterpAllQuantities AT CCTK_EVOL AFTER TracerFlow_EvolveTrac
 {
   LANG: C
   OPTIONS: global-late
-} "Interpolate basic physical quantities at the tracer locations"
+} "Interpolate all quantities to the tracer locations"
 
-SCHEDULE TracerFlow_InterpExtra AT CCTK_ANALYSIS
-{
-  LANG: C
-  OPTIONS: global
-} "Interpolate extra analysis quantities at the tracer locations"
-
-SCHEDULE TracerFlow_OutputTracers AT CCTK_ANALYSIS AFTER TracerFlow_InterpExtra
+SCHEDULE TracerFlow_OutputTracers AT CCTK_ANALYSIS
 {
   LANG: C
   OPTION: global

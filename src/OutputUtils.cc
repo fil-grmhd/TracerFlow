@@ -32,11 +32,11 @@
 #include "cctk_Arguments.h"
 #include "cctk_Parameters.h"
 
-#include "OutputUtils.h"
+#include "OutputUtils.hh"
 
 #include <util_String.h>
 
-static void WriteHeader(hid_t file_id, Header * header)
+void WriteHeader(hid_t file_id, Header * header)
 {
   hid_t group_id, dspace_id, attr_id;
 
@@ -175,7 +175,7 @@ static void WriteHeader(hid_t file_id, Header * header)
   H5Gclose(group_id);
 }
 
-static void WriteIDs(hid_t file_id, unsigned int const * IDs, int const siz)
+void WriteIDs(hid_t file_id, unsigned int const * IDs, int const siz)
 {
   hid_t group_id, dspace_id, dset_id;
   herr_t h5err;
@@ -194,8 +194,8 @@ static void WriteIDs(hid_t file_id, unsigned int const * IDs, int const siz)
   H5Gclose(group_id);
 }
 
-static void WriteField(hid_t file_id, float const * var, char const * name,
-    int ncomp, int const siz)
+void WriteField(hid_t file_id, float const * var, char const * name,
+                int ncomp, int const siz)
 {
   hid_t group_id, dspace_id, dset_id;
   herr_t h5err;
@@ -228,7 +228,7 @@ static void WriteField(hid_t file_id, float const * var, char const * name,
   H5Gclose(group_id);
 }
 
-static void WriteVisItFile(CCTK_ARGUMENTS)
+void WriteVisItFile(CCTK_ARGUMENTS)
 {
   DECLARE_CCTK_PARAMETERS;
   DECLARE_CCTK_ARGUMENTS;
@@ -275,9 +275,9 @@ static void WriteVisItFile(CCTK_ARGUMENTS)
   first_time = 0;
 }
 
-static void WriteSingleVariableChunked(cGH const * cctkGH, int ntracers_on_this_proc,
-    int components, CCTK_REAL * const restrict * restrict data, char const * label,
-    hid_t file_id)
+void WriteSingleVariableChunked(cGH const * cctkGH, int ntracers_on_this_proc,
+                                int components, CCTK_REAL * const restrict * restrict data,
+                                char const * label, hid_t file_id)
 {
   std::vector<float> local_data(ntracers_on_this_proc * components);
   for(int i = 0; i < ntracers_on_this_proc; ++i)
@@ -286,10 +286,10 @@ static void WriteSingleVariableChunked(cGH const * cctkGH, int ntracers_on_this_
   WriteField(file_id, local_data.data(), label, components, ntracers_on_this_proc);
 }
 
-static void CollectAndWriteSingleVariable(const cGH *cctkGH, int ntracers_on_this_proc,
-                                          int components, CCTK_REAL * const restrict * restrict data,
-                                          const char *label,
-                                          hid_t file_id)
+void CollectAndWriteSingleVariable(const cGH *cctkGH, int ntracers_on_this_proc,
+                                   int components, CCTK_REAL * const restrict * restrict data,
+                                   const char *label,
+                                   hid_t file_id)
 {
   DECLARE_CCTK_PARAMETERS;
 
