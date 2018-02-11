@@ -38,23 +38,6 @@ void TracerFlow_InterpAdvectionVelocity(cGH *cctkGH,
 {
   DECLARE_CCTK_PARAMETERS;
 
-  // CHECK: move this? add frozen check?
-  for(int i = 0; i < num_tracers; ++i) {
-    if(fabs(t_x[i]) > coord_bound ||
-       fabs(t_y[i]) > coord_bound ||
-       fabs(t_z[i]) > coord_bound) {
-
-      if(verbose > 0)
-        CCTK_VInfo(CCTK_THORNSTRING, "InterpAdvectionVelocity: Tracer %i moved out of bounds: (%e,%e,%e)",i,t_x[i],t_y[i],t_z[i]);
-
-      t_velx[i] = 0;
-      t_vely[i] = 0;
-      t_velz[i] = 0;
-
-      t_frozen[i] = 1;
-    }
-  }
-
   // get interpolator
   int const interp_handle = CCTK_InterpHandle(interpolator);
   if(interp_handle < 0)
@@ -111,6 +94,27 @@ void TracerFlow_InterpAdvectionVelocity(cGH *cctkGH,
   assert (ierr == 0);
 
   Util_TableDestroy (options_handle);
+
+  // check if any of the tracers went out of bounds in the meantime
+  // and fix velocity to zero in that case
+  for(int i = 0; i < num_tracers; ++i) {
+    if(fabs(t_x[i]) > coord_bound ||
+       fabs(t_y[i]) > coord_bound ||
+       fabs(t_z[i]) > coord_bound) {
+
+      if(verbose > 2 && t_frozen[i] == 0)
+        // This outputs tracers of the root process only
+        CCTK_VInfo(CCTK_THORNSTRING, "InterpAdvectionVelocity: Tracer %i moved out of bounds: (%e,%e,%e)",i,t_x[i],t_y[i],t_z[i]);
+
+      t_velx[i] = 0;
+      t_vely[i] = 0;
+      t_velz[i] = 0;
+
+      // this is here for postprocessing purposes only
+      // CHECK: all of these ones could be skipped in any interpolation / computation
+      t_frozen[i] = 1;
+    }
+  }
 
   return;
 }
@@ -170,6 +174,7 @@ extern "C" void TracerFlow_InterpAllQuantities(CCTK_ARGUMENTS)
       reinterpret_cast<void *>(tracer_z)
   };
 
+
   std::vector<CCTK_INT> input_array_indices = {
       CCTK_VarIndex("HydroBase::rho"),
       CCTK_VarIndex("HydroBase::temperature"),
@@ -177,6 +182,14 @@ extern "C" void TracerFlow_InterpAllQuantities(CCTK_ARGUMENTS)
       CCTK_VarIndex("HydroBase::w_lorentz"),
       CCTK_VarIndex("TracerFlow::eninf")
   };
+
+/* DEBUG with non-tabulated EOS
+  std::vector<CCTK_INT> input_array_indices = {
+      CCTK_VarIndex("HydroBase::rho"),
+      CCTK_VarIndex("HydroBase::w_lorentz"),
+      CCTK_VarIndex("TracerFlow::eninf")
+  };
+*/
 
   for(auto it = extra_var_names.begin(); it < extra_var_names.end(); ++it) {
       CCTK_INT var_idx = CCTK_VarIndex(it->c_str());
@@ -187,6 +200,7 @@ extern "C" void TracerFlow_InterpAllQuantities(CCTK_ARGUMENTS)
 
   std::vector<CCTK_INT> output_array_types(ninputs,CCTK_VARIABLE_REAL);
 
+
   std::vector<void*> output_arrays = {
       reinterpret_cast<void *>(tracer_rho),
       reinterpret_cast<void *>(tracer_temp),
@@ -194,6 +208,15 @@ extern "C" void TracerFlow_InterpAllQuantities(CCTK_ARGUMENTS)
       reinterpret_cast<void *>(tracer_wlorentz),
       reinterpret_cast<void *>(tracer_eninf)
   };
+
+
+/* DEBUG with non-tabulated EOS
+  std::vector<void*> output_arrays = {
+      reinterpret_cast<void *>(tracer_rho),
+      reinterpret_cast<void *>(tracer_wlorentz),
+      reinterpret_cast<void *>(tracer_eninf)
+  };
+*/
 
   for(auto it = tracer_extras.begin(); it < tracer_extras.end(); ++it) {
       output_arrays.push_back(reinterpret_cast<void *>(it->data()));

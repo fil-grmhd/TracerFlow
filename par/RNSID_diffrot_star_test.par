@@ -235,7 +235,7 @@ ADMBase::initial_lapse   = "RNSID"
 ADMBase::initial_shift   = "RNSID"
 ADMBase::initial_dtlapse = "zero"
 ADMBase::initial_dtshift = "zero"
-HydroBase::initial_hydro = "RNSID"
+#HydroBase::initial_hydro = "RNSID"
 
 RNSID::rho_central                              = 0.0003291
 RNSID::rho_abs_atmo           = 1.0e-11
@@ -292,15 +292,20 @@ ActiveThorns = "TracerFlow"
 
 TracerFlow::ntracers = 10000
 TracerFlow::put_some_random_tracers = yes
+TracerFlow::xmin = -15.0
+TracerFlow::xmax = 15.0
+TracerFlow::ymin = -15.0
+TracerFlow::ymax = 15.0
 # do analytic RK4 test
 #TracerFlow::debug = 1
+TracerFlow::verbose = 2
 TracerFlow::step_freq = 1
-TracerFlow::coord_bound = 40.0
+TracerFlow::coord_bound = 10.0
 # interpolate rho twice to test the extra fields
 TracerFlow::extra_vars = "
 HydroBase::rho
 "
-TracerFlow::outTracers_every = 32
+TracerFlow::outTracers_every = 16
 
 # =============================================================================
 # Output

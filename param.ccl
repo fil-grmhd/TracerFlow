@@ -15,28 +15,6 @@ BOOLEAN manual_pos_tracers "position manually the tracers from file" STEERABLE=A
 {
 } "no"
 
-BOOLEAN put_some_random_tracers "Put some random tracers on the equator for testing" STEERABLE=ALWAYS
-{
-} "no"
-
-CCTK_REAL xmin "Mininum of random sampling region in x direction" STEERABLE=ALWAYS
-{
-  (*:*) :: ""
-} 0
-CCTK_REAL xmax "Maximum of random sampling region in x direction" STEERABLE=ALWAYS
-{
-  (*:*) :: ""
-} 0
-CCTK_REAL ymin "Mininum of random sampling region in y direction" STEERABLE=ALWAYS
-{
-  (*:*) :: ""
-} 0
-CCTK_REAL ymax "Maximum of random sampling region in y direction" STEERABLE=ALWAYS
-{
-  (*:*) :: ""
-} 0
-
-
 CCTK_INT start_iteration "Iteration at which to start advecting the tracers"
 {
   0:* :: "zero or some positive number."
@@ -116,6 +94,26 @@ CCTK_INT debug "Evolve analytic velocity data and verify that the RK4 solution i
   0:1 :: "0 = disable; 1=enable debug"
 } 0
 
+BOOLEAN put_some_random_tracers "Put some random tracers on the equator for testing" STEERABLE=ALWAYS
+{
+} "no"
+
+CCTK_REAL xmin "Mininum of random sampling region in x direction" STEERABLE=ALWAYS
+{
+  (*:*) :: ""
+} 0
+CCTK_REAL xmax "Maximum of random sampling region in x direction" STEERABLE=ALWAYS
+{
+  (*:*) :: ""
+} 0
+CCTK_REAL ymin "Mininum of random sampling region in y direction" STEERABLE=ALWAYS
+{
+  (*:*) :: ""
+} 0
+CCTK_REAL ymax "Maximum of random sampling region in y direction" STEERABLE=ALWAYS
+{
+  (*:*) :: ""
+} 0
 
 SHARES: IO
 USES STRING out_dir

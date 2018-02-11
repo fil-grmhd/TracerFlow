@@ -28,6 +28,9 @@ extern "C" void TracerFlow_ParamCheck(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS
   DECLARE_CCTK_PARAMETERS
 
+  // initialize RK4 counter
+  *RK4_counter = 1;
+
   // figure out how many tracers each process has
   int group = CCTK_GroupIndex("TracerFlow::tracer_evol");
   cGroupDynamicData data;

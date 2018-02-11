@@ -57,8 +57,11 @@ extern "C" void TracerFlow_AdvectTracers(CCTK_ARGUMENTS)
   int num_tracers = data.lsh[0];
 
   if(cctk_iteration % step_freq == 0 && cctk_iteration >= start_iteration) {
+    if(verbose > 0)
+      CCTK_VInfo(CCTK_THORNSTRING, "AdvectTracers: Doing RK4 step (it=%i)",cctk_iteration);
+
     if(verbose > 1)
-      CCTK_VInfo(CCTK_THORNSTRING, "Advect: Got a dt of %e.",CCTK_DELTA_TIME);
+      CCTK_VInfo(CCTK_THORNSTRING, "AdvectTracers: Got a dt of %e.",CCTK_DELTA_TIME);
 
     // The factor of 2 comes from RK4 going from t0 to t0+dt/2 to t0+dt.
     double dt = CCTK_DELTA_TIME * step_freq * 2.0;
@@ -73,6 +76,9 @@ extern "C" void TracerFlow_AdvectTracers(CCTK_ARGUMENTS)
     */
 
     if(*RK4_counter == 1) {
+      if(verbose > 1)
+        CCTK_VInfo(CCTK_THORNSTRING, "AdvectTracers: Doing first RK4 step (it=%i)",cctk_iteration);
+
       /*
         RK4 step 1:
         k_1 = dt f(y_n,t_n) = dt f(y_n) <- no explicit time dependence in f
@@ -105,6 +111,10 @@ extern "C" void TracerFlow_AdvectTracers(CCTK_ARGUMENTS)
       return;
 
     } else if(*RK4_counter == 2) {
+
+      if(verbose > 1)
+        CCTK_VInfo(CCTK_THORNSTRING, "AdvectTracers: Doing second and third RK4 step (it=%i)",cctk_iteration);
+
       // make some temporary arrays for shifted positions
 //      auto shifted_tracer_x = std::make_unique<double[]>(num_tracers);
 //      auto shifted_tracer_y = std::make_unique<double[]>(num_tracers);
@@ -177,6 +187,9 @@ extern "C" void TracerFlow_AdvectTracers(CCTK_ARGUMENTS)
       *RK4_counter = 4;
       return;
     } else if(*RK4_counter == 4) {
+      if(verbose > 1)
+        CCTK_VInfo(CCTK_THORNSTRING, "AdvectTracers: Doing fourth RK4 step (it=%i)",cctk_iteration);
+
       // make some temporary arrays for shifted positions
 //      auto shifted_tracer_x = std::make_unique<double[]>(num_tracers);
 //      auto shifted_tracer_y = std::make_unique<double[]>(num_tracers);
@@ -216,6 +229,9 @@ extern "C" void TracerFlow_AdvectTracers(CCTK_ARGUMENTS)
       /******************************/
       /* DEBUG MODE: compute errors */
       if(debug) {
+        if(verbose > 1)
+          CCTK_VInfo(CCTK_THORNSTRING, "AdvectTracers: Computing debug error (it=%i)",cctk_iteration);
+
         double sumx,sumy,sumz,sumxe,sumye,sumze;
         sumx=sumy=sumz=sumxe=sumye=sumze=0;
         for(int i = 0; i<num_tracers; i++) {

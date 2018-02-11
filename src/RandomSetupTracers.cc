@@ -32,6 +32,10 @@ extern "C" void TracerFlow_Random_SetupTracers(CCTK_ARGUMENTS) {
     (void) CCTK_GroupDynamicData (cctkGH, group, &data);
     int num_tracers = data.lsh[0];
 
+    if(verbose > 1)
+      CCTK_VInfo(CCTK_THORNSTRING, "Setting %i random tracers.",num_tracers);
+
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dist_x(xmin,xmax);
