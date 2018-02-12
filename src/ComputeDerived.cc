@@ -35,6 +35,7 @@ extern "C" void TracerFlow_ComputeDerivedQuantities(CCTK_ARGUMENTS)
     #pragma omp parallel for schedule(static)
     for(int k = 0; k < cctk_lsh[2]; ++k) {
       for(int j = 0; j < cctk_lsh[1]; ++j) {
+	#pragma omp simd
         for(int i = 0; i < cctk_lsh[0]; ++i) {
           const int ijk = CCTK_GFINDEX3D(cctkGH, i, j, k);
 

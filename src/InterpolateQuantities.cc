@@ -97,14 +97,16 @@ void TracerFlow_InterpAdvectionVelocity(cGH *cctkGH,
 
   // check if any of the tracers went out of bounds in the meantime
   // and fix velocity to zero in that case
+  #pragma omp simd //This should also work here
   for(int i = 0; i < num_tracers; ++i) {
     if(fabs(t_x[i]) > coord_bound ||
        fabs(t_y[i]) > coord_bound ||
        fabs(t_z[i]) > coord_bound) {
-
+/* DEBUG ONLY 
       if(verbose > 2 && t_frozen[i] == 0)
         // This outputs tracers of the root process only
         CCTK_VInfo(CCTK_THORNSTRING, "InterpAdvectionVelocity: Tracer %i moved out of bounds: (%e,%e,%e)",i,t_x[i],t_y[i],t_z[i]);
+*/
 
       t_velx[i] = 0;
       t_vely[i] = 0;
